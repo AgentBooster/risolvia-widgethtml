@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Evita barras de scroll en el iframe */
+        }
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -44,15 +50,15 @@
         
     </style>
 </head>
-<body class="bg-white min-h-screen flex items-center justify-center p-4">
+<body>
     
-    <div class="w-full max-w-[1000px] h-[700px] bg-[#F1EEE9] rounded-3xl shadow-lg px-2 py-8 flex flex-col text-stone-800 relative overflow-hidden">
+    <div class="w-full h-full bg-[#F1EEE9] flex flex-col text-stone-800 relative overflow-hidden">
         
         <!-- Contenedor principal del Chat -->
-        <div class="w-full max-w-2xl mx-auto flex flex-col flex-grow min-h-0 relative overflow-hidden">
+        <div class="w-full max-w-2xl mx-auto flex flex-col flex-grow min-h-0 relative overflow-hidden p-4 sm:p-6 md:p-8">
             
              <!-- Banner Superior Unificado -->
-            <div class="w-full pb-4 flex items-center justify-between">
+            <div class="w-full pb-4 flex items-center justify-between flex-shrink-0">
                 <!-- Perfil de Javier (inicialmente invisible) -->
                 <div id="banner-profile" class="flex items-center gap-3 opacity-0 transition-opacity duration-300">
                     <img src="https://res.cloudinary.com/dsdnpstgi/image/upload/v1758678218/Disen%CC%83o_sin_ti%CC%81tulo_cgec41.jpg" alt="Foto de perfil de Javier" class="w-8 h-8 rounded-full object-cover">
@@ -79,7 +85,7 @@
             </div>
 
             <!-- Hilo de la Conversación (Scrollable) -->
-            <div id="chat-thread" class="flex-grow overflow-y-auto pr-2 space-y-4 pb-6">
+            <div id="chat-thread" class="flex-grow overflow-y-auto pr-2 space-y-4 pb-6 min-h-0">
                 <!-- Contenido de Bienvenida (se oculta) -->
                 <div id="welcome-content" class="flex flex-col h-full">
                     <div class="text-center pt-8">
@@ -125,7 +131,7 @@
 
             <!-- Vista de Historial de Chat (inicialmente oculta) -->
             <div id="history-view" class="hidden flex-grow flex flex-col pt-8 min-h-0">
-                <div class="flex items-center justify-end mb-8 px-4">
+                <div class="flex items-center justify-end mb-8 px-4 flex-shrink-0">
                      <button id="new-chat-btn" class="flex items-center gap-2 text-stone-800 font-semibold bg-white border border-stone-300 rounded-lg px-4 py-2 hover:bg-stone-50 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -782,24 +788,22 @@
                 });
                 recognition.onstart = () => { isListening = true; micBtn.classList.add('mic-listening'); };
                 recognition.onend = () => { isListening = false; micBtn.classList.remove('mic-listening'); };
-                recognition.onerror = (event) => { console.error('Error en el reconocimiento de voz:', event.error); isListening = false; micBtn.classList.remove('mic-listening');};
+                recognition.onerror = (event) => { 
+                    console.error('Error en el reconocimiento de voz:', event.error); 
+                    isListening = false; 
+                    micBtn.classList.remove('mic-listening');
+                };
                 recognition.onresult = (event) => {
-                    // --- MODIFICACIÓN CLAVE ---
-                    // Reconstruye el texto completo desde el inicio del reconocimiento
-                    // para evitar espacios extra y sobrescrituras incorrectas.
                     let final_transcript = '';
                     for (let i = 0; i < event.results.length; ++i) {
                         final_transcript += event.results[i][0].transcript;
                     }
 
                     if (final_transcript.trim().length > 0) {
-                        // Determina cuál campo de texto está activo
                         const currentInput = mainTextArea.classList.contains('hidden') ? singleLineInput : mainTextArea;
                         
-                        // Actualiza el campo con el texto completo reconocido hasta ahora
                         currentInput.value = final_transcript;
 
-                        // Llama a la función de ajuste correspondiente
                         if (currentInput === singleLineInput) {
                             checkInputOverflow();
                         } else {
@@ -818,7 +822,3 @@
     </script>
 </body>
 </html>
-
-
-
-
